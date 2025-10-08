@@ -105,6 +105,21 @@ Property   | Type   | Description
 **`prompt`** (required)     | string | The next user prompt to continue the Codex conversation.
 **`conversationId`** (required)  | string | The id of the conversation to continue.
 
+**`gravity-sketch`** - Proxy the Gravity Sketch desktop CLI. Useful for orchestrating scene management and asset import/export workflows directly from Codex. The tool accepts:
+
+Property   | Type   | Description
+-----------|--------|---------------------------------------------------------------
+**`action`** (required) | string | Which Gravity Sketch operation to execute: `launch`, `open-scene`, `export-scene`, `import-asset`, or `custom-command`.
+`host` / `port` | string / number | Override the default local API endpoint if Gravity Sketch is exposed elsewhere.
+`token` | string | Authentication token passed through the `GRAVITY_SKETCH_TOKEN` environment variable. Falls back to the value configured on the MCP server process.
+`projectId` / `sceneId` | string | Identifiers required by `open-scene`/`export-scene` actions.
+`exportPath` / `importPath` | string | Local filesystem paths for exporting or importing content.
+`extraArgs` | array<string> | Additional CLI flags appended when `action = "custom-command"`.
+`payload` | object | Arbitrary JSON forwarded to the CLI via `--payload` for advanced automation.
+
+> [!NOTE]
+> Set `GRAVITY_SKETCH_CLI` in the MCP server environment if the Gravity Sketch executable lives outside your `$PATH`. The server streams incremental stdout/stderr updates back to the client as `gravity-sketch/event` notifications while the command runs.
+
 ### Trying it Out
 > [!TIP]
 > Codex often takes a few minutes to run. To accommodate this, adjust the MCP inspector's Request and Total timeouts to 600000ms (10 minutes) under ⛭ Configuration.

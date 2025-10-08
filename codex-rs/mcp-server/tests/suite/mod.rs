@@ -5,6 +5,8 @@ mod codex_message_processor_flow;
 mod codex_tool;
 mod config;
 mod create_conversation;
+#[cfg(unix)]
+mod gravity_sketch_tool;
 mod interrupt;
 mod list_resume;
 mod login;

@@ -29,6 +29,7 @@ mod json_to_toml;
 pub(crate) mod message_processor;
 mod outgoing_message;
 mod patch_approval;
+mod tool_handlers;
 
 use crate::message_processor::MessageProcessor;
 use crate::outgoing_message::OutgoingMessage;
@@ -40,6 +41,8 @@ pub use crate::exec_approval::ExecApprovalElicitRequestParams;
 pub use crate::exec_approval::ExecApprovalResponse;
 pub use crate::patch_approval::PatchApprovalElicitRequestParams;
 pub use crate::patch_approval::PatchApprovalResponse;
+pub use crate::tool_handlers::gravity_sketch::GravitySketchAction;
+pub use crate::tool_handlers::gravity_sketch::GravitySketchToolCallParam;
 
 /// Size of the bounded channels used to communicate between tasks. The value
 /// is a balance between throughput and memory usage – 128 messages should be

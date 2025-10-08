@@ -8,6 +8,8 @@ use crate::codex_tool_config::create_tool_for_codex_tool_call_param;
 use crate::codex_tool_config::create_tool_for_codex_tool_call_reply_param;
 use crate::error_code::INVALID_REQUEST_ERROR_CODE;
 use crate::outgoing_message::OutgoingMessageSender;
+use crate::tool_handlers::gravity_sketch::create_tool_for_gravity_sketch;
+use crate::tool_handlers::gravity_sketch::handle_tool_call_gravity_sketch;
 use codex_protocol::mcp_protocol::ClientRequest;
 use codex_protocol::mcp_protocol::ConversationId;
 
@@ -322,6 +324,7 @@ impl MessageProcessor {
             tools: vec![
                 create_tool_for_codex_tool_call_param(),
                 create_tool_for_codex_tool_call_reply_param(),
+                create_tool_for_gravity_sketch(),
             ],
             next_cursor: None,
         };
@@ -343,6 +346,9 @@ impl MessageProcessor {
             "codex-reply" => {
                 self.handle_tool_call_codex_session_reply(id, arguments)
                     .await
+            }
+            "gravity-sketch" => {
+                handle_tool_call_gravity_sketch(self.outgoing.clone(), id, arguments).await;
             }
             _ => {
                 let result = CallToolResult {
