@@ -372,6 +372,34 @@ env = { "API_KEY" = "value" }
 startup_timeout_ms = 20_000
 ```
 
+### Gravity Sketch MCP server
+
+Codex ships a built-in `gravity-sketch` tool that proxies the Gravity Sketch desktop application's local CLI. To expose it to Codex, add an entry such as the following to `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.gravity-sketch]
+command = "codex-mcp-server"
+args = []
+env = {
+  # Point the MCP server at the Gravity Sketch CLI shim.
+  "GRAVITY_SKETCH_CLI" = "/Applications/GravitySketch.app/Contents/MacOS/gravity-sketch-cli",
+  # Provide an API token that will be injected as GRAVITY_SKETCH_TOKEN for every request.
+  "GRAVITY_SKETCH_TOKEN" = "replace-with-your-token"
+}
+startup_timeout_ms = 20_000
+```
+
+When invoking the tool, you can further customise the request via the following fields:
+
+- `action`: one of `launch`, `open-scene`, `export-scene`, `import-asset`, or `custom-command`.
+- `host` / `port`: override the default Gravity Sketch API endpoint when you are not using the local defaults.
+- `token`: per-call override for authentication (falls back to `GRAVITY_SKETCH_TOKEN`).
+- `projectId`, `sceneId`, `exportPath`, `importPath`: supply identifiers/paths required by the selected action.
+- `extraArgs`: additional CLI flags appended when using the `custom-command` action.
+- `payload`: arbitrary JSON forwarded to the CLI via `--payload`.
+
+Any keys placed under `env` in the MCP config are forwarded verbatim to the spawned Gravity Sketch CLI, allowing you to inject proxy settings or additional authentication material.
+
 You can also manage these entries from the CLI [experimental]:
 
 ```shell

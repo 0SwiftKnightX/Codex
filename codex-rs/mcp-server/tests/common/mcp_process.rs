@@ -12,6 +12,7 @@ use tokio::process::ChildStdout;
 use anyhow::Context;
 use assert_cmd::prelude::*;
 use codex_mcp_server::CodexToolCallParam;
+use codex_mcp_server::GravitySketchToolCallParam;
 use codex_protocol::mcp_protocol::AddConversationListenerParams;
 use codex_protocol::mcp_protocol::ArchiveConversationParams;
 use codex_protocol::mcp_protocol::CancelLoginChatGptParams;
@@ -35,6 +36,7 @@ use mcp_types::JSONRPCMessage;
 use mcp_types::JSONRPCNotification;
 use mcp_types::JSONRPCRequest;
 use mcp_types::JSONRPCResponse;
+use mcp_types::ListToolsRequest;
 use mcp_types::ModelContextProtocolNotification;
 use mcp_types::ModelContextProtocolRequest;
 use mcp_types::RequestId;
@@ -211,6 +213,25 @@ impl McpProcess {
             Some(serde_json::to_value(codex_tool_call_params)?),
         )
         .await
+    }
+
+    pub async fn send_gravity_sketch_tool_call(
+        &mut self,
+        params: GravitySketchToolCallParam,
+    ) -> anyhow::Result<i64> {
+        let gravity_params = CallToolRequestParams {
+            name: "gravity-sketch".to_string(),
+            arguments: Some(serde_json::to_value(params)?),
+        };
+        self.send_request(
+            mcp_types::CallToolRequest::METHOD,
+            Some(serde_json::to_value(gravity_params)?),
+        )
+        .await
+    }
+
+    pub async fn send_list_tools_request(&mut self) -> anyhow::Result<i64> {
+        self.send_request(ListToolsRequest::METHOD, None).await
     }
 
     /// Send a `newConversation` JSON-RPC request.
